@@ -21,4 +21,4 @@ jobs:
         with:
           RUSTTARGET: ${{ matrix.target }}
           EXTRA_FILES: "README.md LICENSE"
-          TOOLCHAIN_VERSION: "1.82.0"
+          TOOLCHAIN_VERSION: stable
