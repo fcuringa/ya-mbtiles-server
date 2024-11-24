@@ -1,0 +1,6 @@
+/target
+.venv
+auth.py
+.idea
+mymap
+requirements.txt
