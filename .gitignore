@@ -2,5 +2,4 @@
 .venv
 auth.py
 .idea
-example-data
 requirements.txt
