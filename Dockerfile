@@ -13,6 +13,8 @@ RUN cargo build --profile release
 
 COPY example_auth.py auth.py
 
+COPY example-data example-data
+
 EXPOSE 3000
 
 ENTRYPOINT ["/src/target/release/ya-mbtiles-server"]

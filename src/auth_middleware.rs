@@ -6,12 +6,14 @@ use actix_web::body::{BoxBody, MessageBody};
 use actix_web::dev::{ServiceRequest, ServiceResponse};
 use actix_web::{Error, HttpResponse};
 use actix_web::error::HttpError;
-use actix_web::middleware::Next;
+use actix_web::middleware::{Logger, Next};
 use actix_web::web::{head, Data};
+use pyo3::impl_::wrap::SomeWrap;
 use pyo3::prelude::{PyAnyMethods, PyModule};
 use pyo3::Python;
 use pyo3::types::IntoPyDict;
 use pyo3_ffi::c_str;
+use log::{debug, log};
 use crate::app_conf::{AppState, AuthState};
 use crate::error::UnauthorizedAccess;
 
@@ -49,19 +51,26 @@ pub(crate) async fn auth_middleware(
             }
         }
 
+        let mut is_check_required = true;
+
+        // No auth required
+        if user_session_hash == "" {
+            is_check_required = false;
+            is_allowed = true;
+        }
+
         // Try to get the session from the cache
         let user_auth_state = auth_cache.get(user_session_hash.as_str());
 
-        let mut is_check_required = true;
         if user_auth_state.is_some() {
             // Found session hash in the cache
             let auth_state = user_auth_state.unwrap();
             if now < auth_state.exp_time {
-                println!("Cache hit");
+                debug!("Cache hit for {}", user_session_hash);
                 is_check_required = false;
                 is_allowed = auth_state.is_allowed;
             } else {
-                println!("Cache hit but expired");
+                debug!("Cache hit but expired for {}", user_session_hash);
             }
         }
 
@@ -80,7 +89,7 @@ pub(crate) async fn auth_middleware(
                     .unwrap().extract().unwrap();
 
                 // Print and save result to cache
-                println!("Result from auth script: {:?}", auth_result);
+                debug!("Result from auth script: {:?}", auth_result);
                 auth_cache.insert(user_session_hash.to_string(), AuthState { is_allowed: auth_result, exp_time: Instant::now().add(Duration::from_secs(60)) });
                 is_allowed = auth_result;
             });

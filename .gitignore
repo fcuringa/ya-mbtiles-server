@@ -2,5 +2,5 @@
 .venv
 auth.py
 .idea
-mymap
+example-data
 requirements.txt
