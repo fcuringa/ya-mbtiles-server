@@ -16,15 +16,27 @@ Serves MBTiles really fast. Supports custom authentication and using filesystem 
 Usage: ya-mbtiles-server [OPTIONS]
 
 Options:
-      --port [<PORT>]                 Port to listen on [default: 3000]
-      --route [<ROUTE>]               Route prefix for serving MBTiles [default: /mbtiles]
-      --webroot [<WEBROOT>]           Webroot for serving tiles [default: ./example-data]
-      --tilesmode [<TILES_MODE>]      The serving mode for MBTiles, either 'filesystem' or 'mbtiles'. The former assumes the tile data is stored directly as individual files, the latter assumes a flat directory of MBTiles files. [default: mbtiles]
-      --authscript [<AUTH_SCRIPT>]    Python script for authentication [default: auth.py]
-      --authheaders [<AUTH_HEADERS>]  Request headers with authorization data, if you need several of them use commas to separate [default: ]
-      --cachetime [<CACHE_TIME>]      Cache validity in seconds [default: 3600]
-  -h, --help                          Print help
-  -V, --version                       Print version
+      --port [<PORT>]
+          Port to listen on [default: 3000]
+      --route [<ROUTE>]
+          Route prefix for serving MBTiles [default: /mbtiles]
+      --webroot [<WEBROOT>]
+          Webroot for serving tiles [default: ./example-data]
+      --tilesmode [<TILES_MODE>]
+          The serving mode for MBTiles, either 'filesystem' or 'mbtiles'. The former assumes the tile data is stored directly as individual files, the latter assumes a flat directory of MBTiles files. [default: mbtiles]
+      --authscript [<AUTH_SCRIPT>]
+          Python script for authentication [default: auth.py]
+      --authheaders [<AUTH_HEADERS>]
+          Request headers with authorization data, if you need several of them use commas to separate [default: ]
+      --cachetime [<CACHE_TIME>]
+          Cache validity in seconds for the authentication result [default: 3600]
+      --cachecontrolheader [<CACHE_CONTROL_HEADER>]
+          The Cache-Control header to be used in the responses [default: max-age=604800]
+  -h, --help
+          Print help
+  -V, --version
+          Print version
+
 ```
 
 In more details:
