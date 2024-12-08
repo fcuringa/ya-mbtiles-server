@@ -118,7 +118,7 @@ async fn main() {
         .arg(arg!(--tilesmode [TILES_MODE] "The serving mode for MBTiles, either 'filesystem' or 'mbtiles'. The former assumes the tile data is stored directly as individual files, the latter assumes a flat directory of MBTiles files.").default_value("mbtiles"))
         .arg(arg!(--authscript [AUTH_SCRIPT] "Python script for authentication").default_value("auth.py"))
         .arg(arg!(--authheaders [AUTH_HEADERS] "Request headers with authorization data, if you need several of them use commas to separate").default_value(""))
-        .arg(arg!(--cachetime [CACHE_TIME] "Cache validity in seconds").default_value("3600"))
+        .arg(arg!(--cachetime [CACHE_TIME] "Cache validity in seconds for the authentication result").default_value("3600"))
         .get_matches();
 
     // Get the port from the command line arguments
