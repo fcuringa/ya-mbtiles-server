@@ -2,7 +2,7 @@
 
 ## Code of conduct
 
-The code of conduct is available here: [Code of conduct](#CODE_OF_CONDUCT.md).
+The code of conduct is available here: [Code of Conduct](https://github.com/fcuringa/ya-mbtiles-server/blob/main/CODE_OF_CONDUCT.md).
 
 Make sure you review it before interacting with people in this repo: pull requests, issues, milestones, etc.
 
