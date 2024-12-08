@@ -57,7 +57,15 @@
                 type: 'raster',
                 source: 'osm',
             }],
+        },
+        transformRequest: (url, resourceType) => {
+            return {
+                url: url,
+                // Add some basic authentication for testing, here 'user:password'.
+                headers: {'Authorization': "Basic dXNlcjpwYXNzd29yZA=="},
+            };
         }
+
     });
     document.getElementById("raster").addEventListener("change", (ev) => {
         if (ev.target.checked) {
