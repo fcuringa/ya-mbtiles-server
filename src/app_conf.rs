@@ -7,6 +7,7 @@ pub struct AppState {
     pub(crate) webroot: String,
     pub(crate) auth_headers: Vec<String>,
     pub(crate) cache_validity_seconds: u64,
+    pub(crate) cache_control_header: String,
     pub(crate) auth_cache: Arc<Mutex<HashMap<String, AuthState>>>
 }
 

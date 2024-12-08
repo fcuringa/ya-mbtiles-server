@@ -41,9 +41,15 @@ async fn get_mbtile_in_filesystem(req: HttpRequest) -> impl Responder {
         .join(projected_y.to_string())
         .join(x.to_string());
 
+    let mut response = HttpResponse::Ok();
+
+    if !app_data.cache_control_header.is_empty() {
+        response.insert_header(("Cache-Control", app_data.cache_control_header.clone()));
+    }
+
     if file_path.exists() {
         match File::open(&file_path).await {
-            Ok(file) => HttpResponse::Ok().streaming(ReaderStream::new(file)),
+            Ok(file) => response.streaming(ReaderStream::new(file)),
             Err(_) => HttpResponse::InternalServerError().body("Could not read file"),
         }
     } else {
@@ -98,6 +104,10 @@ async fn get_mbtile_sqlite(req: HttpRequest) -> impl Responder {
             response.insert_header(("Content-Encoding", "gzip"));
         }
 
+        if !app_data.cache_control_header.is_empty() {
+            response.insert_header(("Cache-Control", app_data.cache_control_header.clone()));
+        }
+
         match query_res {
             Ok(State::Row) => response.body(data),
             Err(_) => HttpResponse::NotFound().body("Could not find tile data"),
@@ -119,6 +129,7 @@ async fn main() {
         .arg(arg!(--authscript [AUTH_SCRIPT] "Python script for authentication").default_value("auth.py"))
         .arg(arg!(--authheaders [AUTH_HEADERS] "Request headers with authorization data, if you need several of them use commas to separate").default_value(""))
         .arg(arg!(--cachetime [CACHE_TIME] "Cache validity in seconds for the authentication result").default_value("3600"))
+        .arg(arg!(--cachecontrolheader [CACHE_CONTROL_HEADER] "The Cache-Control header to be used in the responses").default_value("max-age=604800"))
         .get_matches();
 
     // Get the port from the command line arguments
@@ -128,6 +139,7 @@ async fn main() {
     let auth_headers = matches.get_one::<String>("authheaders").unwrap().as_str();
     let webroot = matches.get_one::<String>("webroot").unwrap().as_str();
     let mbtiles_mode = matches.get_one::<String>("tilesmode").unwrap().as_str();
+    let cache_control_header = matches.get_one::<String>("cachecontrolheader").unwrap().as_str();
     let cache_validity_s = matches.get_one::<String>("cachetime").unwrap().as_str().parse().unwrap();
 
     let bind_address = format!("0.0.0.0:{}", port);
@@ -140,6 +152,7 @@ async fn main() {
         webroot: webroot.to_string(),
         auth_cache: Arc::new(Mutex::new(Default::default())),
         cache_validity_seconds: cache_validity_s,
+        cache_control_header: cache_control_header.to_string(),
         auth_headers: match auth_headers{
             "" => {
                 warn!("No authentication was selected, client identity will not be checked");
